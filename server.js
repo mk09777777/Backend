@@ -7,6 +7,7 @@ dotenv.config();
 const url = process.env.MONGODB_URI;
 
 const routes = require('./Routes');
+const loginRoutes = require('./Routes/UserRoutes');
 
 // CORS middleware
 app.use((req, res, next) => {
@@ -18,6 +19,7 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 app.use('/api', routes);
+app.use('/api/auth', loginRoutes);
 
 mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
