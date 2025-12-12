@@ -12,6 +12,7 @@ const carSchema = new mongoose.Schema({
         transmission:String,
         location:String,
         description:String,
+        booking:Boolean
     // Add more fields as needed
 });
 
