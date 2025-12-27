@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const carSchema = new mongoose.Schema({
     // Add your car fields here
-     name:String,
+        name:String,
         image:String,
         type:String,
         seats:String,
@@ -11,6 +11,8 @@ const carSchema = new mongoose.Schema({
         fuelType:String,
         transmission:String,
         location:String,
+        description:String,
+        booking:Boolean,
     // Add more fields as needed
 });
 

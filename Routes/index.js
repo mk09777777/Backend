@@ -15,6 +15,27 @@ router.get('/cars', async (req, res) => {
     }
 });
 
+// adding cars from admin pannel using Post
+
+router.post('/addCar',async(req,res)=>{
+    const {name,image,type,seats,pricePerDay,fuelType,transmission,location,description}=req.body;
+    if(!name || !image || !type || !seats || !pricePerDay || !fuelType || !transmission || !location){
+        return res.status(422).json({error:"Please fill all the fields"});
+    }
+    const CarName = await Car.findOne({name:name});
+    if(CarName){
+        return res.status(422).json({error:"Car already exists"});
+    }
+    try{
+        const car = new Car({name,image,type,seats,pricePerDay,fuelType,transmission,location,description});
+        await car.save();
+        res.status(200).json({message:"Car added successfully"});
+    }catch(err){
+        res.status(500).json({error:err.message});
+    }
+
+})
+
 router.get('/FeaturedCars', async(req,res)=>{
     try{
         const FeaturedCars = await FeaturedCar.find({});
@@ -36,5 +57,52 @@ try{
 }
     
 });
+
+
+router.get('/cars/:id', async (req, res) => {
+    try {
+        const car = await Car.findById(req.params.id);
+        if (!car) {
+            return res.status(404).json({ message: 'Car not found' });
+        }
+        res.json(car);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+router.delete('/deleteCar/:id', async (req, res) => {
+    console.log('DELETE route called with ID:', req.params.id);
+    try {
+        const car = await Car.findByIdAndDelete(req.params.id);
+        if (!car) {
+            console.log('Car not found with ID:', req.params.id);
+            return res.status(404).json({ message: 'Car not found' });
+        }
+        console.log('Car deleted successfully:', car.name);
+        res.json({ message: 'Car deleted successfully' });
+    } catch (err) {
+        console.error('Error deleting car:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+router.put('/updateCar/:id',async(req,res)=>{
+    const {name,image,type,seats,pricePerDay,fuelType,transmission,location,description}=req.body;
+    if(!name || !image || !type || !seats || !pricePerDay || !fuelType || !transmission || !location){
+        return res.status(422).json({error:"Please fill all the fields"});
+    }
+    try{
+        const car = await Car.findByIdAndUpdate(req.params.id,req.body,{new:true});
+        if(!car){
+            return res.status(404).json({message:"Car not found"});
+        }
+        res.status(200).json({message:"Car updated successfully",car});
+    }catch(err){
+        res.status(500).json({error:err.message});
+    }
+});
+
 
 module.exports = router;
